@@ -1,0 +1,19 @@
+{
+  "artboards": [
+    { "file": "Music.dc.html",     "x": 0,    "y": 0,    "w": 390, "h": 844 },
+    { "file": "Chat.dc.html",      "x": 470,  "y": 0,    "w": 390, "h": 844 },
+    { "file": "Main.dc.html",      "x": 940,  "y": 0,    "w": 390, "h": 844 },
+    { "file": "Night.dc.html",     "x": 1410, "y": 0,    "w": 390, "h": 844 },
+    { "file": "Publish.dc.html",   "x": 1880, "y": 0,    "w": 390, "h": 844 },
+    { "file": "Ask.dc.html",      "x": 0,    "y": 1040, "w": 390, "h": 844 },
+    { "file": "DateNight.dc.html", "x": 470,  "y": 1040, "w": 390, "h": 844 },
+    { "file": "Rounds.dc.html",    "x": 940,  "y": 1040, "w": 390, "h": 844 },
+    { "file": "Profile.dc.html",   "x": 1410, "y": 1040, "w": 390, "h": 844 },
+    { "file": "Market.dc.html",    "x": 1880, "y": 1040, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    { "id": "row-core", "x": 0, "y": -140, "w": 520, "text": "Core flow, left to right: connect your music, plan a night in the thread, the board, the night that came out of it, publishing it with the second seat private." },
+    { "id": "row-rest", "x": 0, "y": 900, "w": 520, "text": "Everything else: a Draw table, the extension moment mid-date, whose round it is, the profile, and a market.\n\nNo status bar or keyboard is drawn — the real ones sit on top on device." }
+  ],
+  "launch": { "view": "canvas" }
+}
