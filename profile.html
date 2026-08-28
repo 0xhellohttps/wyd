@@ -84,7 +84,7 @@
   .tag-lost{background:var(--panel3);color:var(--faint)}
 
   /* intros */
-  .intros{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line2);
+  .intros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%, 250px), 1fr));gap:1px;background:var(--line2);
     border:1px solid var(--line2);border-radius:20px;overflow:hidden}
   .intro{background:var(--panel);padding:26px 24px;display:flex;flex-direction:column;gap:7px;min-height:150px}
   .intro-role{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--lime)}
@@ -92,10 +92,23 @@
   .intro-detail{font-size:14px;color:var(--body)}
   .intro-val{margin-top:auto;font-size:22px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
 
+  .gotos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:1px;
+    background:var(--line2);border:1px solid var(--line2);border-radius:20px;overflow:hidden}
+  .goto{background:var(--panel);padding:24px 22px;display:flex;flex-direction:column;gap:7px;min-height:168px}
+  .goto-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:2px}
+  .goto-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;padding:4px 9px;border-radius:999px;
+    background:var(--chip);color:var(--mute)}
+  .goto-tag.lime{background:rgba(198,245,91,.1);border:1px solid rgba(198,245,91,.3);color:var(--lime)}
+  .goto-n{font-size:22px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
+  .goto-n.goto-dim{color:var(--faint)}
+  .goto-x{font-size:13px;color:var(--dim);margin-left:2px}
+  .goto-name{font-size:17px;font-weight:600;letter-spacing:-.02em}
+  .goto-hood{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:var(--dim)}
+  .goto-note{margin:6px 0 0;font-size:14px;line-height:1.55;color:var(--body)}
   .tags{display:flex;flex-wrap:wrap;gap:8px}
   .tag-taste{padding:7px 14px;border-radius:999px;background:var(--panel3);font-size:13.5px;color:var(--lime)}
 
-  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%, 330px), 1fr));gap:24px}
   .pad{padding:26px 28px;display:flex;flex-direction:column;gap:16px}
   .note{font-size:14.5px;line-height:1.6;color:var(--body)}
 
@@ -223,6 +236,49 @@
       </div>
       <p class="note">She booked a room in its first week that sixty-one later nights ran through. The graph saw it, so August is comped &mdash; nothing entered, nothing claimed, it simply arrives as a night already held. <a href="index.html#rewards" style="color:var(--lime)">How rewards work</a>.</p>
     </div>
+  </section>
+
+  <section class="blk">
+    <div class="blk-head"><span class="blk-title">Favourites and go-tos</span><span class="eyebrow">Where she actually returns</span></div>
+    <div class="gotos">
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag lime">GO-TO</span><span class="goto-n">14<span class="goto-x">×</span></span></div>
+        <span class="goto-name">Amsterdam & 81st</span>
+        <span class="goto-hood">UPPER WEST SIDE</span>
+        <p class="goto-note">Her table. Where she takes people she wants to impress without appearing to try.</p>
+      </div>
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag lime">GO-TO</span><span class="goto-n">9<span class="goto-x">×</span></span></div>
+        <span class="goto-name">The counter on Columbus</span>
+        <span class="goto-hood">UPPER WEST SIDE</span>
+        <p class="goto-note">One hour, short on purpose. The opener for most nights she publishes.</p>
+      </div>
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag lime">GO-TO</span><span class="goto-n">7<span class="goto-x">×</span></span></div>
+        <span class="goto-name">Above the wine shop</span>
+        <span class="goto-hood">UPPER WEST SIDE</span>
+        <p class="goto-note">Resident trio, no cover before ten. The reason her nights end on foot.</p>
+      </div>
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag">SAVED</span><span class="goto-n">4<span class="goto-x">×</span></span></div>
+        <span class="goto-name">Hana Counter</span>
+        <span class="goto-hood">MIDTOWN</span>
+        <p class="goto-note">The swap she makes in other people's nights when the ceiling is tight.</p>
+      </div>
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag">SHOP</span><span class="goto-n">3<span class="goto-x">×</span></span></div>
+        <span class="goto-name">Blue Scarpa</span>
+        <span class="goto-hood">WEST VILLAGE</span>
+        <p class="goto-note">Not a restaurant. Seth put her onto it; she has put six people onto it since.</p>
+      </div>
+      <div class="goto">
+        <div class="goto-head"><span class="goto-tag">ON DECK</span><span class="goto-n goto-dim">—</span></div>
+        <span class="goto-name">Rue Six</span>
+        <span class="goto-hood">LOWER EAST SIDE</span>
+        <p class="goto-note">Saved, never run. It keeps turning up inside nights she liked.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px;max-width:720px">Counted from nights that actually ran, not from places she saved once. The number is how many times she has been back &mdash; which is the only version of a favourite the graph believes.</p>
   </section>
 
   <section class="blk">
