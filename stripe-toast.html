@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stripe + Toast — integration strategy · wyd.ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#08090A;--panel:#0D0F11;--panel2:#0F1113;--chip:#14181A;--sunk:#0B0D0E;
+    --lime:#C6F55B;--ink:#EDEAE3;--body:#A2A6AC;--mute:#8A8E94;--dim:#75797F;--faint:#5E6268;
+    --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.09);
+    --sans:'Schibsted Grotesk',-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+  header.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:15px 40px;background:rgba(8,9,10,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .logo{font-size:20px;font-weight:700;letter-spacing:-.04em} .logo i{font-style:normal;color:var(--lime)}
+  .top nav{display:flex;gap:24px;font-size:14px;color:var(--body)} .top nav a:hover{color:var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--lime)}
+  .hero{padding:72px 0 56px;display:flex;flex-direction:column;gap:20px;max-width:820px}
+  h1{font-size:clamp(32px,4vw,54px);line-height:1.03;letter-spacing:-.045em;font-weight:600}
+  .lede{font-size:18px;line-height:1.6;color:var(--body);max-width:680px}
+  .stamp{display:inline-flex;gap:10px;align-items:center;padding:8px 15px;border:1px solid rgba(198,245,91,.3);
+    border-radius:999px;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;color:var(--lime);align-self:flex-start}
+  section{padding:0 0 84px}
+  h2{font-size:clamp(24px,2.6vw,36px);line-height:1.08;letter-spacing:-.035em;font-weight:600;margin-bottom:14px}
+  h3{font-size:20px;letter-spacing:-.025em;font-weight:600;margin-bottom:10px}
+  .sec-h{margin-bottom:32px;max-width:760px;display:flex;flex-direction:column;gap:12px}
+  .sec-h p{font-size:16.5px;line-height:1.62;color:var(--body)}
+  .diagram{background:var(--sunk);border:1px solid var(--line2);border-radius:22px;padding:32px 28px;overflow-x:auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line2);
+    border:1px solid var(--line2);border-radius:20px;overflow:hidden}
+  .fact{background:var(--panel);padding:28px 26px;display:flex;flex-direction:column;gap:9px}
+  .fact-t{font-size:17px;font-weight:600;letter-spacing:-.02em}
+  .fact-b{font-size:14.5px;line-height:1.6;color:var(--body)}
+  .badge{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;padding:4px 10px;
+    border-radius:999px;background:var(--chip);color:var(--mute)}
+  .badge.ok{background:rgba(198,245,91,.1);border:1px solid rgba(198,245,91,.3);color:var(--lime)}
+  .badge.no{background:var(--chip);color:var(--faint)}
+  .phase{background:var(--panel2);border:1px solid var(--line2);border-radius:20px;padding:30px 28px;margin-bottom:16px}
+  .phase-h{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin-bottom:16px;
+    padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .phase-k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--lime);min-width:120px}
+  .phase-s{font-size:19px;font-weight:600;letter-spacing:-.025em}
+  .phase-l{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .phase-l li{position:relative;padding-left:20px;font-size:15px;line-height:1.6;color:var(--body)}
+  .phase-l li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:999px;background:var(--lime)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  .tbl{background:var(--panel2);border:1px solid var(--line2);border-radius:20px;overflow:hidden}
+  thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--mute);font-weight:400;text-align:left;padding:20px 16px 12px}
+  thead th:first-child{padding-left:28px} thead th:last-child{padding-right:28px}
+  tbody td{padding:14px 16px;border-top:1px solid rgba(255,255,255,.05);color:var(--body);vertical-align:top}
+  tbody td:first-child{padding-left:28px;color:var(--ink);white-space:nowrap} tbody td:last-child{padding-right:28px}
+  .yes{color:var(--lime)} .no{color:var(--faint)}
+  .callout{background:var(--panel2);border:1px solid rgba(198,245,91,.28);border-radius:20px;padding:32px 30px;
+    display:flex;flex-direction:column;gap:12px}
+  footer{border-top:1px solid var(--line);padding:30px 40px;max-width:1180px;margin:40px auto 0;
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--faint);font-size:13px}
+
+  .cur{color:#C6F55B !important}
+  header.top nav .sep{width:1px;height:13px;background:rgba(255,255,255,.14);display:inline-block}
+  @media(max-width:640px){.wrap{padding:0 22px}header.top{padding:14px 22px}.top nav{display:none}}
+
+  @media print {
+    html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:12mm}
+    header.top{position:static;border-bottom:1px solid rgba(255,255,255,.12)}
+    section{break-inside:avoid;padding-bottom:44px}
+    .diagram,.phase,.grid,.tbl,.callout,.fact{break-inside:avoid}
+    .hero{padding-top:28px}
+    footer{margin-top:20px}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="index.html" class="logo">wyd<i>.ai</i></a>
+  <nav>
+    <a href="index.html">The product</a>
+    <a href="pitch.html">Pitch</a>
+    <a href="pitch.html">Pitch</a>
+    <a href="thesis.html">Thesis</a>
+    <a href="profile.html">Profile</a>
+    <a href="stripe-toast.html" class="cur">Strategy</a>
+    <span class="sep"></span>
+    <a href="index.html#waitlist" style="padding:9px 18px;border-radius:999px;background:#C6F55B;color:#08090A;font-weight:600">Text your wyd</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+        <span class="eyebrow">STRIPE + TOAST</span>
+    <h1>How we get inside the network that already moves the money.</h1>
+    <p class="lede">Toast owns the floor and, crucially, processes the payment itself. Stripe owns the only shipping agent-payment tooling. Between them they are the shortest path from an agent that plans a night to an agent that can actually pay for one. This is what exists today, what doesn't, and the order to attack it in.</p>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">01 — THE MECHANICS</span>
+      <h2>How a restaurant actually processes a payment.</h2>
+      <p>Worth being precise about, because every integration argument below turns on where in this chain a third party can insert itself. The critical detail: Toast is not just the POS. It is the payment facilitator too — the processing margin is a large part of why Toast exists, which is exactly why it guards the position.</p>
+    </div>
+    <div class="diagram">
+  <svg viewBox="0 0 1240 620" role="img" aria-label="How a restaurant payment flows from guest to Toast terminal to Toast Payments to the card network to the issuing bank, then the settlement timeline from auth through tip adjust and capture to settlement at T plus one or two, and the three points where an agent must insert itself." style="width:100%;min-width:1000px;height:auto;display:block;overflow:visible">
+    <text x="0" y="28" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.13em">AUTHORISATION — WHAT HAPPENS WHEN THE CARD IS TAPPED</text>
+    <rect x="0" y="50" width="227" height="112" rx="14" fill="#0F1113" stroke="rgba(255,255,255,0.09)" vector-effect="non-scaling-stroke"/>
+    <text x="18" y="80" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">GUEST</text>
+    <text x="18" y="106" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">taps, dips or pays</text>
+    <text x="18" y="126" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">from the handheld</text>
+    <line x1="233" y1="106" x2="238" y2="106" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M238,101 L247,106 L238,111 Z" fill="#3A3F44"/>
+    <rect x="253" y="50" width="227" height="112" rx="14" fill="#0F1113" stroke="rgba(255,255,255,0.09)" vector-effect="non-scaling-stroke"/>
+    <text x="271" y="80" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">TOAST TERMINAL</text>
+    <text x="271" y="106" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">the POS — order and</text>
+    <text x="271" y="126" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">line items live here</text>
+    <line x1="486" y1="106" x2="491" y2="106" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M491,101 L500,106 L491,111 Z" fill="#3A3F44"/>
+    <rect x="506" y="50" width="227" height="112" rx="14" fill="#0F1113" stroke="rgba(198,245,91,0.32)" vector-effect="non-scaling-stroke"/>
+    <text x="524" y="80" font-family="'IBM Plex Mono', monospace" font-size="12.5" fill="#C6F55B" text-anchor="start" font-weight="600" letter-spacing="0.06em">TOAST PAYMENTS</text>
+    <text x="524" y="106" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">Toast is the processor.</text>
+    <text x="524" y="126" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">this is where its margin is</text>
+    <line x1="739" y1="106" x2="744" y2="106" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M744,101 L753,106 L744,111 Z" fill="#3A3F44"/>
+    <rect x="759" y="50" width="227" height="112" rx="14" fill="#0F1113" stroke="rgba(255,255,255,0.09)" vector-effect="non-scaling-stroke"/>
+    <text x="777" y="80" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">CARD NETWORK</text>
+    <text x="777" y="106" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">Visa · Mastercard</text>
+    <text x="777" y="126" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">routes the request</text>
+    <line x1="992" y1="106" x2="997" y2="106" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M997,101 L1006,106 L997,111 Z" fill="#3A3F44"/>
+    <rect x="1012" y="50" width="227" height="112" rx="14" fill="#0F1113" stroke="rgba(255,255,255,0.09)" vector-effect="non-scaling-stroke"/>
+    <text x="1030" y="80" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">ISSUING BANK</text>
+    <text x="1030" y="106" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">approves or declines</text>
+    <text x="1030" y="126" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#A2A6AC" text-anchor="start" font-weight="400">holds the funds</text>
+    <path d="M1125,162 L1125,190 L113,190 L113,168" fill="none" stroke="#3A3F44" stroke-width="2" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>
+    <path d="M108,168 L113,159 L118,168 Z" fill="#3A3F44"/>
+    <text x="619" y="184" font-family="'IBM Plex Mono', monospace" font-size="10" fill="#75797F" text-anchor="middle" font-weight="400" letter-spacing="0.09em">APPROVAL RETURNS IN ~2 SECONDS — THE GUEST NEVER SEES ANY OF THE ABOVE</text>
+    <text x="0" y="246" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.13em">SETTLEMENT — WHEN THE RESTAURANT ACTUALLY GETS PAID</text>
+    <rect x="0" y="268" width="290" height="104" rx="14" fill="#14181A" stroke="rgba(255,255,255,0.06)" vector-effect="non-scaling-stroke"/>
+    <text x="18" y="296" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">AUTH</text>
+    <text x="18" y="318" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.06em">at the tap</text>
+    <text x="18" y="342" font-family="'Schibsted Grotesk', sans-serif" font-size="12" fill="#A2A6AC" text-anchor="start" font-weight="400">funds held, not taken</text>
+    <line x1="296" y1="318" x2="301" y2="318" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M301,313 L310,318 L301,323 Z" fill="#3A3F44"/>
+    <rect x="316" y="268" width="290" height="104" rx="14" fill="#14181A" stroke="rgba(255,255,255,0.06)" vector-effect="non-scaling-stroke"/>
+    <text x="334" y="296" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">TIP ADJUST</text>
+    <text x="334" y="318" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.06em">end of service</text>
+    <text x="334" y="342" font-family="'Schibsted Grotesk', sans-serif" font-size="12" fill="#A2A6AC" text-anchor="start" font-weight="400">the amount changes after approval</text>
+    <line x1="612" y1="318" x2="617" y2="318" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M617,313 L626,318 L617,323 Z" fill="#3A3F44"/>
+    <rect x="632" y="268" width="290" height="104" rx="14" fill="#14181A" stroke="rgba(255,255,255,0.06)" vector-effect="non-scaling-stroke"/>
+    <text x="650" y="296" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">CAPTURE</text>
+    <text x="650" y="318" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.06em">close of night</text>
+    <text x="650" y="342" font-family="'Schibsted Grotesk', sans-serif" font-size="12" fill="#A2A6AC" text-anchor="start" font-weight="400">batched, then submitted</text>
+    <line x1="928" y1="318" x2="933" y2="318" stroke="#3A3F44" stroke-width="2" vector-effect="non-scaling-stroke"/><path d="M933,313 L942,318 L933,323 Z" fill="#3A3F44"/>
+    <rect x="948" y="268" width="290" height="104" rx="14" fill="#14181A" stroke="rgba(255,255,255,0.06)" vector-effect="non-scaling-stroke"/>
+    <text x="966" y="296" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#EDEAE3" text-anchor="start" font-weight="600">SETTLEMENT</text>
+    <text x="966" y="318" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.06em">T+1 to T+2</text>
+    <text x="966" y="342" font-family="'Schibsted Grotesk', sans-serif" font-size="12" fill="#A2A6AC" text-anchor="start" font-weight="400">net of interchange, assessments, Toast's markup</text>
+    <text x="0" y="432" font-family="'IBM Plex Mono', monospace" font-size="10.5" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.13em">WHERE AN AGENT HAS TO INSERT ITSELF</text>
+    <rect x="0" y="454" width="396" height="150" rx="14" fill="#0B0D0E" stroke="rgba(255,255,255,0.09)" vector-effect="non-scaling-stroke"/>
+    <text x="20" y="484" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.1em">BEFORE — THE HOLD</text>
+    <text x="20" y="510" font-family="'Schibsted Grotesk', sans-serif" font-size="13.5" fill="#EDEAE3" text-anchor="start" font-weight="600">Hold the table, pre-authorise each share</text>
+    <text x="20" y="556" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">No reservation API exists at Toast. Today this is a</text>
+    <text x="20" y="574" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">direct restaurant relationship, not an integration.</text>
+    <rect x="312" y="466" width="68" height="22" rx="999" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke"/>
+    <text x="346" y="481" font-family="'IBM Plex Mono', monospace" font-size="9.5" fill="#8A8E94" text-anchor="middle" font-weight="400" letter-spacing="0.09em">GAP</text>
+    <rect x="422" y="454" width="396" height="150" rx="14" fill="#0B0D0E" stroke="rgba(198,245,91,0.32)" vector-effect="non-scaling-stroke"/>
+    <text x="442" y="484" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.1em">AT — THE INSTRUMENT</text>
+    <text x="442" y="510" font-family="'Schibsted Grotesk', sans-serif" font-size="13.5" fill="#EDEAE3" text-anchor="start" font-weight="600">One scoped credential per guest</text>
+    <text x="442" y="556" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">Stripe Issuing for agents (Apr 2026) is the closest</text>
+    <text x="442" y="574" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">shipping product. Still requires human approval per</text>
+    <text x="442" y="592" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">transaction.</text>
+    <rect x="734" y="466" width="68" height="22" rx="999" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke"/>
+    <text x="768" y="481" font-family="'IBM Plex Mono', monospace" font-size="9.5" fill="#C6F55B" text-anchor="middle" font-weight="400" letter-spacing="0.09em">PARTIAL</text>
+    <rect x="844" y="454" width="396" height="150" rx="14" fill="#0B0D0E" stroke="rgba(198,245,91,0.32)" vector-effect="non-scaling-stroke"/>
+    <text x="864" y="484" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="start" font-weight="400" letter-spacing="0.1em">AFTER — THE OUTCOME</text>
+    <text x="864" y="510" font-family="'Schibsted Grotesk', sans-serif" font-size="13.5" fill="#EDEAE3" text-anchor="start" font-weight="600">What they ate, spent, how long they stayed</text>
+    <text x="864" y="556" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">Toast Orders API can do this — but only for</text>
+    <text x="864" y="574" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">certified partners a restaurant has explicitly</text>
+    <text x="864" y="592" font-family="'Schibsted Grotesk', sans-serif" font-size="11.5" fill="#A2A6AC" text-anchor="start" font-weight="400">authorised.</text>
+    <rect x="1156" y="466" width="68" height="22" rx="999" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" vector-effect="non-scaling-stroke"/>
+    <text x="1190" y="481" font-family="'IBM Plex Mono', monospace" font-size="9.5" fill="#C6F55B" text-anchor="middle" font-weight="400" letter-spacing="0.09em">REACHABLE</text>
+  </svg>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">02 — WHAT IS ACTUALLY AVAILABLE</span>
+      <h2>Verified, as of August 2026.</h2>
+      <p>Sourced from primary developer documentation. Where something could not be confirmed it is marked as such rather than assumed.</p>
+    </div>
+    <div class="grid">
+      <div class="fact">
+        <span class="badge no">VERIFIED</span>
+        <span class="fact-t">Toast has no reservation API</span>
+        <p class="fact-b">Toast's own integration documentation states there is no reservation API. A separate availability service covers online-order capacity, not table slots. A reservation is modelled as a placeholder Order — a workaround available only to certified reservation-system partners.</p>
+      </div>
+      <div class="fact">
+        <span class="badge ok">VERIFIED</span>
+        <span class="fact-t">Toast has a real partner program</span>
+        <p class="fact-b">Public docs at doc.toasttab.com and a partner program running since 2016. Application and certification gated, not self-serve, but genuinely open to apply — unlike Resy, which has no public application path at all.</p>
+      </div>
+      <div class="fact">
+        <span class="badge ok">VERIFIED</span>
+        <span class="fact-t">Toast Orders API returns the outcome</span>
+        <p class="fact-b">Available to certified partners that a restaurant has explicitly authorised. This is the half of the loop nobody else can give us: what the table actually ordered and spent. No explicit no-show field found.</p>
+      </div>
+      <div class="fact">
+        <span class="badge ok">VERIFIED</span>
+        <span class="fact-t">Stripe ships the agent payment tooling</span>
+        <p class="fact-b">Agentic Commerce Suite (Dec 2025) and Issuing for agents (Apr 2026) — virtual cards scoped to an agent with spend controls. The most mature agent-payment product available today, with real developer docs rather than a waitlist.</p>
+      </div>
+      <div class="fact">
+        <span class="badge no">VERIFIED</span>
+        <span class="fact-t">Autonomous spend does not exist yet</span>
+        <p class="fact-b">Stripe's own documentation states every agent transaction currently requires human review before the credential is shared. Nobody has shipped unattended agent spend — so design the product around confirmation, not autonomy.</p>
+      </div>
+      <div class="fact">
+        <span class="badge no">VERIFIED</span>
+        <span class="fact-t">Amex owns the reservation side</span>
+        <p class="fact-b">Amex owns Resy and Tock, and announced a multi-year partnership with Toast in Aug 2025 to feed guestbook data into Toast and launch a consumer booking surface. The reservation layer is consolidating into a competitor.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">03 — THE COMPARISON</span>
+      <h2>Why Toast is the wedge and Resy is not.</h2>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Platform</th><th>Public program</th><th>Read availability</th><th>Book a table</th><th>Outcome data</th></tr></thead>
+        <tbody>
+          <tr><td>Toast</td><td class="yes">Yes — application gated</td><td class="no">No reservation API</td><td class="no">Placeholder Order workaround</td><td class="yes">Orders API, certified partners</td></tr>
+          <tr><td>Stripe</td><td class="yes">Yes — self-serve docs</td><td>n/a</td><td>n/a</td><td class="yes">Full payment-side detail</td></tr>
+          <tr><td>Resy</td><td class="no">None — no application path</td><td class="no">Undocumented</td><td class="no">Reverse-engineered only</td><td class="no">Bilateral deals only</td></tr>
+          <tr><td>OpenTable</td><td>Application + agreement</td><td>Gated to partners</td><td>Gated to partners</td><td class="no">Not documented</td></tr>
+          <tr><td>SevenRooms</td><td>Partnerships form</td><td>Unconfirmed</td><td>Unconfirmed</td><td class="no">Not exposed publicly</td></tr>
+          <tr><td>Square</td><td class="yes">Fully self-serve</td><td class="no">No restaurant reservations</td><td class="no">n/a</td><td>Per-merchant OAuth only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="sec-h">
+      <span class="eyebrow">04 — PLAN OF ATTACK</span>
+      <h2>The order to do it in.</h2>
+      <p>Every comparable company — Resy, Tock, SevenRooms — started with direct, manual, single-city restaurant relationships and reached network-level partnership years later, unlocked by capital or acquisition rather than by a developer application. Plan for that shape.</p>
+    </div>
+      <div class="phase">
+        <div class="phase-h"><span class="phase-k">0–6 MONTHS</span><span class="phase-s">No platform API. Direct restaurants, concierge fulfilment.</span></div>
+        <ul class="phase-l"><li>Hand-picked list in one city. Relationships signed restaurant by restaurant, the way Resy and Tock both started.</li><li>Booking happens through the restaurant's existing consumer flow or a human in the loop. This is not an integration and must never be described as one.</li><li>Cars and tickets via deep links and affiliate paths — both confirmed to need zero approval.</li><li>Apply to Toast's partner program now anyway. It is application-gated, and the queue is the point.</li></ul>
+      </div>
+      <div class="phase">
+        <div class="phase-h"><span class="phase-k">6–18 MONTHS</span><span class="phase-s">Certified Toast partner. Stripe carries the money.</span></div>
+        <ul class="phase-l"><li>Toast Orders API through certification, per restaurant authorisation. That gets the outcome half of the loop — covers, spend, dwell.</li><li>Stripe Agentic Commerce Suite plus Issuing for agents as the payment instrument, with a scoped credential per guest rather than one card fronting the table.</li><li>Human approval stays in the flow. Stripe's own docs still require it, so build the UX around confirming rather than around autonomy.</li><li>Volume becomes the argument. Nothing else opens a reservation network.</li></ul>
+      </div>
+      <div class="phase">
+        <div class="phase-h"><span class="phase-k">18–36 MONTHS</span><span class="phase-s">Reservation access, or the acquisition conversation.</span></div>
+        <ul class="phase-l"><li>Earliest plausible window for a Resy/OpenTable-calibre deal, based on precedent (2.5–6.5 years, and always unlocked by capital or acquisition).</li><li>Amex owns Resy and Tock and is partnered with Toast. Assume that path opens only through an equity event, not a developer application.</li><li>OpenTable and SevenRooms are the realistic gated-but-open alternatives; Square is self-serve but has no restaurant reservation product at all.</li><li>By here the graph should be the asset being bought, not the booking flow.</li></ul>
+      </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">05 — THE AGENTIC ARGUMENT</span>
+      <h2>What we bring that they can't build alone.</h2>
+    </div>
+    <div class="grid">
+      <div class="fact">
+        <span class="badge ok">LEVERAGE</span>
+        <span class="fact-t">We arrive as demand, not as software</span>
+        <p class="fact-b">Toast sells software to restaurants. We arrive with a party of four, a time, and a card already attached. That is the one thing an operator always wants more of, and it is a fundamentally different conversation from another vendor asking for API access.</p>
+      </div>
+      <div class="fact">
+        <span class="badge ok">LEVERAGE</span>
+        <span class="fact-t">We hold the sequence they can't see</span>
+        <p class="fact-b">Toast sees one table. Stripe sees one charge. Neither sees that the table happened because of a show two hours later and a person who recommended it. That sequence is the asset, and it is only assembled at our layer.</p>
+      </div>
+      <div class="fact">
+        <span class="badge ok">LEVERAGE</span>
+        <span class="fact-t">Payments is where the value settles</span>
+        <p class="fact-b">Because Toast processes as well as records, an agent that reliably drives pre-committed, pre-split parties is driving processing volume — the thing Toast actually monetises. Frame every conversation in covers and processed volume, never in features.</p>
+      </div>
+      <div class="fact">
+        <span class="badge no">RISK</span>
+        <span class="fact-t">They can build the consumer surface</span>
+        <p class="fact-b">Local by Toast plus Resy and Tock guestbook data is exactly the discovery surface we would compete with. Assume the platform sees this. The defence is the graph and the provenance chain, not the booking flow.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <span class="eyebrow">THE ONE-LINE VERSION</span>
+      <p style="font-size:19px;line-height:1.5;color:var(--ink)">Apply to Toast now and build the direct-restaurant business as though the API will never arrive. Use Stripe as the money layer from day one, because it is the only part of this that actually ships today. Treat reservation access as an outcome of traction, never as a prerequisite for it.</p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span class="logo" style="font-size:16px">wyd<i>.ai</i></span>
+  <span style="font-family:var(--mono);letter-spacing:.1em;font-size:11px">STRATEGY · AUG 2026</span>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <a href="index.html">The product</a>
+    <a href="thesis.html">Thesis</a>
+    <a href="profile.html">Profile</a>
+    <a href="index.html#waitlist">Access</a>
+  </div>
+</footer>
+</body>
+</html>
