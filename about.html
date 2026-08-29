@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wyd.ai &mdash; the full picture</title>
+<meta name="description" content="wyd.ai is the intelligence layer between intent and real-world commerce. What it is, who it's for, how it makes money, and why now.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#08090A;--panel:#0D0F11;--panel2:#0F1113;--chip:#14181A;--sunk:#0B0D0E;
+    --lime:#C6F55B;--ink:#EDEAE3;--body:#A2A6AC;--mute:#8A8E94;--dim:#75797F;--faint:#5E6268;
+    --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.09);
+    --sans:'Schibsted Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+  header.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:15px 40px;background:rgba(8,9,10,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .logo{font-size:20px;font-weight:700;letter-spacing:-.04em} .logo i{font-style:normal;color:var(--lime)}
+  header.top nav{display:flex;align-items:center;gap:24px;font-size:14px}
+  header.top nav a{color:var(--body)} header.top nav a:hover{color:#F2F0EB}
+  .cur{color:var(--lime) !important}
+  .sep{width:1px;height:13px;background:rgba(255,255,255,.14);display:inline-block}
+  .cta{padding:9px 18px;border-radius:999px;background:var(--lime);color:#08090A;font-weight:600}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--lime)}
+  .hero{padding:96px 0 72px;display:flex;flex-direction:column;gap:24px;max-width:900px}
+  h1{font-size:clamp(36px,5vw,68px);line-height:1.0;letter-spacing:-.05em;font-weight:600;text-wrap:balance}
+  h1 span{color:var(--lime)}
+  .lede{font-size:20px;line-height:1.55;color:var(--body);max-width:700px;text-wrap:pretty}
+  .stamp{display:inline-flex;gap:10px;align-items:center;padding:8px 15px;border:1px solid rgba(198,245,91,.3);
+    border-radius:999px;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;color:var(--lime);align-self:flex-start}
+  .dot{width:6px;height:6px;border-radius:999px;background:var(--lime)}
+  section{padding:0 0 88px}
+  h2{font-size:clamp(26px,3vw,42px);line-height:1.05;letter-spacing:-.04em;font-weight:600;text-wrap:balance}
+  .sec-h{margin-bottom:34px;max-width:780px;display:flex;flex-direction:column;gap:14px}
+  .sec-h p{font-size:17px;line-height:1.62;color:var(--body)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%, 280px), 1fr));gap:1px;background:var(--line2);
+    border:1px solid var(--line2);border-radius:20px;overflow:hidden}
+  .cell{background:var(--panel);padding:28px 26px;display:flex;flex-direction:column;gap:10px}
+  .cell-t{font-size:17.5px;font-weight:600;letter-spacing:-.022em}
+  .cell-b{font-size:14.5px;line-height:1.6;color:var(--body);margin:0}
+  .pill{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;padding:4px 10px;
+    border-radius:999px;background:var(--chip);color:var(--mute)}
+  .pill.ok{background:rgba(198,245,91,.1);border:1px solid rgba(198,245,91,.3);color:var(--lime)}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line2);
+    border:1px solid var(--line2);border-radius:20px;overflow:hidden;margin-bottom:34px}
+  .kpi>div{background:var(--panel);padding:26px;display:flex;flex-direction:column;gap:6px}
+  .kpi-v{font-size:36px;font-weight:600;letter-spacing:-.045em;line-height:1;color:var(--lime)}
+  .kpi-l{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--mute)}
+  .kpi-s{font-size:13.5px;color:var(--dim)}
+  .rev{background:var(--panel2);border:1px solid var(--line2);border-radius:20px;padding:26px 28px;
+    display:flex;gap:22px;align-items:flex-start;margin-bottom:14px}
+  .rev-n{font-family:var(--mono);font-size:26px;color:var(--lime);line-height:1;min-width:38px}
+  .rev-body{display:flex;flex-direction:column;gap:8px}
+  .rev-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .rev-t{font-size:19px;font-weight:600;letter-spacing:-.025em}
+  .phase{background:var(--panel2);border:1px solid var(--line2);border-radius:20px;padding:26px 28px;
+    display:flex;gap:26px;flex-wrap:wrap;margin-bottom:14px}
+  .phase-k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--lime);min-width:120px;padding-top:4px}
+  .phase-t{font-size:19px;font-weight:600;letter-spacing:-.025em;display:block;margin-bottom:7px}
+  .quote{background:var(--panel2);border:1px solid rgba(198,245,91,.28);border-radius:22px;padding:40px 36px;
+    display:flex;flex-direction:column;gap:16px}
+  .quote p{font-size:clamp(20px,2.2vw,28px);line-height:1.35;letter-spacing:-.03em;color:var(--ink);text-wrap:pretty}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%, 320px), 1fr));gap:22px}
+  .ask{display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line2);
+    border-radius:20px;padding:30px 28px}
+  .ask-t{font-size:18px;font-weight:600;letter-spacing:-.02em}
+  footer{border-top:1px solid var(--line);padding:34px 40px;display:flex;align-items:center;justify-content:space-between;
+    gap:24px;flex-wrap:wrap;max-width:1240px;margin:0 auto}
+  footer a{color:var(--dim);font-size:14px} footer a:hover{color:#F2F0EB}
+  @media(max-width:860px){header.top nav a:not(.cta){display:none} .wrap{padding:0 22px} header.top{padding:14px 22px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html" class="logo">wyd<i>.ai</i></a>
+  <nav>
+    <a href="index.html">The product</a>
+    <a href="pitch.html">Pitch deck</a>
+    <a href="about.html" class="cur">About</a>
+    <a href="pitch.html">Pitch deck</a>
+    <a href="thesis.html">Thesis</a>
+    <a href="profile.html">Profile</a>
+    <a href="stripe-toast.html">Strategy</a>
+    <span class="sep"></span>
+    <a href="index.html#waitlist" class="cta">Text your wyd</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="stamp"><span class="dot"></span>NEW YORK PILOT &middot; PRE-LAUNCH &middot; AUG 2026</span>
+    <h1>The whole argument,<br><span>written out.</span></h1>
+    <p class="lede">The <a href="pitch.html" style="color:var(--lime)">deck</a> is fourteen slides and takes about four minutes. This is the same case at full length, for anyone who wants the reasoning rather than the summary — what it is, who wants it, how it makes money, what the plan is, and what we can honestly claim today.</p>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">01 — THE PROBLEM</span>
+      <h2>Nobody owns the decision. Everybody owns a slice of the aftermath.</h2>
+      <p>Payments see the transaction. Social sees the engagement. Ticketing sees attendance. The reservation book sees one hour of a five-hour night. Not one of them holds the causal sequence that connects them — and the person who actually caused it gets nothing at all.</p>
+    </div>
+    <div class="grid">
+      <div class="cell">
+        <span class="cell-t">Planning is the tax</span>
+        <p class="cell-b">Four apps, eleven tabs, one person stuck organising, and a group chat that dies on Thursday. Repeat two or three times a week.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Recommendation dead-ends</span>
+        <p class="cell-b">A video makes you want a place and hands you nothing — no table, no time, no group, no price. Every food post is a night that was never executable.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Taste has no record</span>
+        <p class="cell-b">The friend who put you onto the room gets one sentence at a table. The venue gets the covers, the platform gets the data, they get nothing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">02 — THE PRODUCT</span>
+      <h2>Three texts and the night is booked.</h2>
+      <p>&ldquo;friday? me + 3. want to see ANOTR&rdquo; &rarr; it comes back with a sequenced night at a real number per person &rarr; &ldquo;book it&rdquo;. Table held, tickets in every wallet, cars at both ends, everyone charged. No app to download, no account to make.</p>
+    </div>
+    <div class="grid">
+      <div class="cell">
+        <span class="cell-t">Three texts</span>
+        <p class="cell-b">Say it, see the night, say yes. Dinner, tickets, cars and the split come back booked.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">The Playlist</span>
+        <p class="cell-b">A night becomes an object other people can run — not a review, the evening itself.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Remix</span>
+        <p class="cell-b">Change someone's night and inherit their audience. Distribution without having built one.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Date night</span>
+        <p class="cell-b">Staged, with a private ask before each stage. Nobody has to be the one who ends it.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Night in</span>
+        <p class="cell-b">Delivery, dinner and what you're watching — timed and split like any other night.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Group nights</span>
+        <p class="cell-b">A threshold. Stays a draft until eight are in, then books all at once. Price drops per head.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Conditions</span>
+        <p class="cell-b">No ceiling, or only if she's in, or anywhere but where he'll be. Constraints that aren't price.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Markets</span>
+        <p class="cell-b">Take a position on who's actually better. Settles on behaviour, not votes.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Rewards</span>
+        <p class="cell-b">Every month the agent comps a night to whoever actually moved people. Behaviour earns it, not follower count.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">03 — THE INSIGHT</span>
+      <h2>Everyone has that one friend who always knows a place.</h2>
+    </div>
+    <div class="quote">
+      <span class="eyebrow">WHAT WE'RE BUILDING, PUT PLAINLY</span>
+      <p>That person is doing unpaid A&amp;R for an entire city. Music made that a real job with a real title — find it early, back it, get credited when it works. Restaurants and live experiences have exactly the same function running inside every friend group, and none of the infrastructure.</p>
+      <p style="font-size:18px;color:var(--body);letter-spacing:0">Provenance makes it visible. Standing makes it comparable. Markets make it worth something. That is the company.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">04 — THE MARKET</span>
+      <h2>The generation that treats going out as the default.</h2>
+    </div>
+    <div class="grid" style="margin-bottom:22px">
+      <div class="cell">
+        <span class="cell-t">Frequent, not special</span>
+        <p class="cell-b">Going out isn't the occasion for people under forty — it's the week. The planning cost gets paid two or three times every week, which is why people default to the same four places.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Social before culinary</span>
+        <p class="cell-b">Nobody picks on food alone. They pick on who's coming, how loud it is, whether you can stay and what's walkable after. A rating of the cooking answers a question nobody asked.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Spent, not saved</span>
+        <p class="cell-b">Going out is one of the largest discretionary lines this group has, and the number is set by a plan nobody wrote down — decided in fragments across four apps.</p>
+      </div>
+    </div>
+    <div class="kpi">
+      <div><span class="kpi-l">PILOT</span><span class="kpi-v">New York</span><span class="kpi-s">density beats coverage</span></div>
+      <div><span class="kpi-l">THEN</span><span class="kpi-v">LA · Miami</span><span class="kpi-s">most churn, least consensus</span></div>
+      <div><span class="kpi-l">THE ANCHOR</span><span class="kpi-v">Dinner</span><span class="kpi-s">weekly, not occasional</span></div>
+      <div><span class="kpi-l">THE WEDGE</span><span class="kpi-v">Hard rooms</span><span class="kpi-s">where an agent is worth most</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">05 — HOW IT MAKES MONEY</span>
+      <h2>Four lines, one engine.</h2>
+      <p>Every one of them settles on the same unit — a booked night with names and a provenance chain attached — which is why they compound rather than compete.</p>
+    </div>
+      <div class="rev">
+        <span class="rev-n">01</span>
+        <div class="rev-body">
+          <div class="rev-head"><span class="rev-t">Take rate on the night</span><span class="pill">CONSUMER</span></div>
+          <p class="cell-b">A cut of what gets booked — tickets, cover, bundles, delivery. The unit is a booked night, and it scales with the thing we already do.</p>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="rev-n">02</span>
+        <div class="rev-body">
+          <div class="rev-head"><span class="rev-t">Brand-authored nights</span><span class="pill">BRAND</span></div>
+          <p class="cell-b">A brand publishes a night and pays for booked covers with provenance attached, not impressions. Competes for committed influencer and experiential budget.</p>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="rev-n">03</span>
+        <div class="rev-body">
+          <div class="rev-head"><span class="rev-t">Operator tools</span><span class="pill">SUPPLY</span></div>
+          <p class="cell-b">Venues connect ticketing, POS and staffing, read demand against the same graph the consumer agent plans against, and release inventory into it.</p>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="rev-n">04</span>
+        <div class="rev-body">
+          <div class="rev-head"><span class="rev-t">Market rake</span><span class="pill">NETWORK</span></div>
+          <p class="cell-b">A small take on positions in the taste markets — which also produces the ranking signal everything else depends on.</p>
+        </div>
+      </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">06 &mdash; WHY EVERYONE SAYS YES</span>
+      <h2>The rare case where nobody has to lose.</h2>
+      <p>Most marketplaces start by taking margin off one side to bribe the other. This one doesn't, because the thing being created &mdash; a night that actually happens, with the chain that caused it attached &mdash; didn't exist before and is worth something different to each party.</p>
+    </div>
+
+    <div style="background:var(--panel2);border:1px solid rgba(198,245,91,.28);border-radius:22px;padding:34px 32px;margin-bottom:22px">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:720px;margin-bottom:26px">
+        <span class="pill ok">THE HARDEST ONE, FIRST</span>
+        <span style="font-size:clamp(22px,2.3vw,30px);font-weight:600;letter-spacing:-.03em;line-height:1.15">Why a restaurant actually wants this</span>
+        <p class="cell-b" style="font-size:16px">Restaurants are pitched software constantly and buy almost none of it. This isn't software. It's a party of four with a card already attached, arriving on a night the restaurant chose to want them.</p>
+      </div>
+      <div class="grid">
+      <div class="cell">
+        <span class="cell-t">Aimable demand</span>
+        <p class="cell-b">The problem was never Friday at 8. It's Tuesday, the 5:30 seating, and the back half of the room. Because the agent plans the whole evening, it can be pointed at the shifts that need filling rather than the ones already full.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">No-shows stop existing</span>
+        <p class="cell-b">The split is charged when the night is confirmed, not when everyone shows up. A table that's already paid for is a fundamentally different asset from a reservation someone might abandon at 7:55.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Bigger parties, planned earlier</span>
+        <p class="cell-b">Groups are worth more per cover and are the hardest to coordinate, which is exactly the coordination the agent removes. Fours and eights instead of the two-top that books at the last minute.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Attribution they've never had</span>
+        <p class="cell-b">For the first time an operator can see which guests arrived because of whose taste. Not a channel report &mdash; the actual person, and the chain from them to the booking.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Guests arrive right</span>
+        <p class="cell-b">They know the time, the room, what it costs and what's after. Tables turn on schedule because the evening was sequenced around the kitchen, not in spite of it.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Nothing gets ripped out</span>
+        <p class="cell-b">They keep their book, their POS, their ticketing. We arrive as demand on top of what they already run &mdash; which is the only integration an operator will actually say yes to.</p>
+      </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="cell">
+        <span class="cell-t">Diners</span>
+        <p class="cell-b">The planning tax disappears. One number for the whole night, split before anyone leaves, nothing booked without a tap, and the group chat stops needing a volunteer to run it.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Venues</span>
+        <p class="cell-b">Release inventory against a live forecast, pair the right artist with the right room, and see which pairings actually produce good nights instead of guessing at it a season ahead.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Creators</span>
+        <p class="cell-b">Provable attribution instead of a flat fee and a discount code, standing that can't be bought with follower count, and a comped night every month they move real behaviour.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Brands</span>
+        <p class="cell-b">Booked covers with a chain attached instead of impressions against an unverified audience &mdash; from budget that is already committed to this exact cohort.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">07 — DISTRIBUTION</span>
+      <h2>Three surfaces hold the pieces. None hold the night.</h2>
+    </div>
+    <div class="two">
+      <div class="cell" style="border:1px solid var(--line2);border-radius:20px">
+        <span class="pill">HAS THE INTENT</span>
+        <span class="cell-t">Raya</span>
+        <p class="cell-b">Creates the highest-stakes planning problem there is, then stops at &ldquo;so where should we go?&rdquo; Date night finishes the sentence.</p>
+      </div>
+      <div class="cell" style="border:1px solid var(--line2);border-radius:20px">
+        <span class="pill">HAS THE INVENTORY</span>
+        <span class="cell-t">Resy</span>
+        <p class="cell-b">Knows a table was wanted. Doesn't know the ticket before, the room after, or the four people splitting it.</p>
+      </div>
+      <div class="cell" style="border:1px solid var(--line2);border-radius:20px">
+        <span class="pill">HAS THE TASTE</span>
+        <span class="cell-t">TikTok</span>
+        <p class="cell-b">Where discovery happens and where it terminates. Every food video is a Playlist nobody made executable.</p>
+      </div>
+      <div class="cell" style="border:1px solid rgba(198,245,91,.28);border-radius:20px">
+        <span class="pill ok">WHO UNDERWRITES IT</span>
+        <span class="cell-t">CPG budgets already paying these creators</span>
+        <p class="cell-b">Beauty, beverage and snack brands spend against this exact cohort through these exact creators, and get reach back. The same money against an authored night buys booked covers with attribution. No new budget line required.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">08 — GO TO MARKET</span>
+      <h2>Seed it with the people who already do this for free.</h2>
+      <p>The cold-start problem and the distribution problem are the same problem, and one group of people solves both. NYC food creators are already authoring nights — badly, in a format that can't be booked and can't be attributed. Give twenty of them a night that <em style="font-style:normal;color:var(--ink)">is</em> bookable and the loop starts turning on its own.</p>
+    </div>
+    <div style="background:var(--sunk);border:1px solid var(--line2);border-radius:22px;padding:30px 26px;overflow-x:auto;margin-bottom:26px">
+      <svg viewBox="0 0 1100 576" role="img" aria-label="A five-stage loop: a creator authors a night, their audience runs it, attribution proves the creator caused the bookings, restaurants open up to attributed demand, supply improves, and the next night is better." style="width:100%;min-width:820px;height:auto;display:block">
+      <ellipse cx="550" cy="288" rx="372" ry="196" fill="none" stroke="#C6F55B" stroke-opacity="0.22" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      <g transform="translate(768.7,129.4) rotate(20.9)"><path d="M-7,-6 L7,0 L-7,6 Z" fill="#C6F55B" fill-opacity="0.65"/></g>
+      <g transform="translate(903.8,348.6) rotate(121.7)"><path d="M-7,-6 L7,0 L-7,6 Z" fill="#C6F55B" fill-opacity="0.65"/></g>
+      <g transform="translate(550.0,484.0) rotate(180.0)"><path d="M-7,-6 L7,0 L-7,6 Z" fill="#C6F55B" fill-opacity="0.65"/></g>
+      <g transform="translate(196.2,348.6) rotate(-121.7)"><path d="M-7,-6 L7,0 L-7,6 Z" fill="#C6F55B" fill-opacity="0.65"/></g>
+      <g transform="translate(331.3,129.4) rotate(-20.9)"><path d="M-7,-6 L7,0 L-7,6 Z" fill="#C6F55B" fill-opacity="0.65"/></g>
+      <rect x="442.0" y="48.0" width="216" height="88" rx="16" fill="#0F1113" stroke="rgba(255,255,255,0.10)" vector-effect="non-scaling-stroke"/>
+      <text x="460.0" y="75.0" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" letter-spacing="0.1em">01</text>
+      <text x="460.0" y="98.0" font-family="'Schibsted Grotesk', sans-serif" font-size="14.5" font-weight="600" fill="#EDEAE3">A creator authors a night</text>
+      <text x="460.0" y="118.0" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#8A8E94">not a post — a bookable object</text>
+      <rect x="795.8" y="183.4" width="216" height="88" rx="16" fill="#0F1113" stroke="rgba(255,255,255,0.10)" vector-effect="non-scaling-stroke"/>
+      <text x="813.8" y="210.4" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" letter-spacing="0.1em">02</text>
+      <text x="813.8" y="233.4" font-family="'Schibsted Grotesk', sans-serif" font-size="14.5" font-weight="600" fill="#EDEAE3">Their audience runs it</text>
+      <text x="813.8" y="253.4" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#8A8E94">replays are real reservations</text>
+      <rect x="660.7" y="402.6" width="216" height="88" rx="16" fill="#0F1113" stroke="rgba(255,255,255,0.10)" vector-effect="non-scaling-stroke"/>
+      <text x="678.7" y="429.6" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" letter-spacing="0.1em">03</text>
+      <text x="678.7" y="452.6" font-family="'Schibsted Grotesk', sans-serif" font-size="14.5" font-weight="600" fill="#EDEAE3">Attribution proves it</text>
+      <text x="678.7" y="472.6" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#8A8E94">the covers trace back to them</text>
+      <rect x="223.3" y="402.6" width="216" height="88" rx="16" fill="#0F1113" stroke="rgba(255,255,255,0.10)" vector-effect="non-scaling-stroke"/>
+      <text x="241.3" y="429.6" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" letter-spacing="0.1em">04</text>
+      <text x="241.3" y="452.6" font-family="'Schibsted Grotesk', sans-serif" font-size="14.5" font-weight="600" fill="#EDEAE3">Restaurants open up</text>
+      <text x="241.3" y="472.6" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#8A8E94">attributed demand, not walk-ins</text>
+      <rect x="88.2" y="183.4" width="216" height="88" rx="16" fill="#0F1113" stroke="rgba(255,255,255,0.10)" vector-effect="non-scaling-stroke"/>
+      <text x="106.2" y="210.4" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" letter-spacing="0.1em">05</text>
+      <text x="106.2" y="233.4" font-family="'Schibsted Grotesk', sans-serif" font-size="14.5" font-weight="600" fill="#EDEAE3">Supply gets better</text>
+      <text x="106.2" y="253.4" font-family="'Schibsted Grotesk', sans-serif" font-size="12.5" fill="#8A8E94">so the next night is better</text>
+      <text x="550" y="282" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#C6F55B" text-anchor="middle" letter-spacing="0.14em">THE FLYWHEEL</text>
+      <text x="550" y="308" font-family="'Schibsted Grotesk', sans-serif" font-size="15" fill="#A2A6AC" text-anchor="middle">taste supply and distribution are the same motion</text>
+    </svg>
+    </div>
+    <div class="grid" style="margin-bottom:22px">
+      <div class="cell">
+        <span class="cell-t">Why the creator says yes</span>
+        <p class="cell-b">Right now nobody can prove a post caused a booking, so they get paid a flat fee and a discount code. Provenance proves it, permanently, on the object. That is a materially better deal than what they are offered today.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Why the restaurant says yes</span>
+        <p class="cell-b">Attributed covers instead of unattributable walk-ins, with no rip-and-replace of the book or the POS. We arrive as a party of four with a card attached — the one thing every operator wants more of.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-t">Why the brand says yes</span>
+        <p class="cell-b">CPG budgets already fund these exact creators for reach. The same spend against an authored night reports in booked covers with a chain attached, which is the only version that survives a marketing review asking for incrementality.</p>
+      </div>
+    </div>
+    <div class="two">
+      <div class="ask">
+        <span class="ask-t">Target mid-tier, not mega</span>
+        <p class="cell-b">A four-million-follower food account is reach without concentration. The right first cohort is the opinionated, neighbourhood-anchored NYC reviewer — The VIP List, Brian Lindo, Jeremy Jacobowitz, @carboholic, @janemotion. Opinionated means falsifiable, which is what markets and standing need. Verify resident-audience share, never follower count.</p>
+      </div>
+      <div class="ask">
+        <span class="ask-t">Comped nights are the retention loop</span>
+        <p class="cell-b">Every month the top authors by replays, first-to-room and nights actually run get their next night booked and paid. It costs a venue less than the covers that author sent it, it can't be bought with follower count, and the reward is itself a night &mdash; published, replayed and traced. The incentive never leaves the system.</p>
+      </div>
+      <div class="ask">
+        <span class="ask-t">Twenty authors, one city, one season</span>
+        <p class="cell-b">Density beats coverage. Twenty creators publishing weekly in one city produce enough overlapping nights that the graph starts predicting rather than guessing — and enough attributed covers to walk into restaurant conversations with numbers instead of a deck.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">09 — WHY NOW</span>
+      <h2>The rails arrived and nobody has pointed them at this.</h2>
+    </div>
+    <div class="grid">
+      <div class="cell">
+        <span class="pill ok">VERIFIED</span>
+        <span class="cell-t">Rails arrived</span>
+        <p class="cell-b">Agent payment tooling shipped in the last 18 months — Stripe's Agentic Commerce Suite and Issuing for agents, Mastercard Agent Pay, Visa Intelligent Commerce.</p>
+      </div>
+      <div class="cell">
+        <span class="pill ok">VERIFIED</span>
+        <span class="cell-t">But nobody's used them here</span>
+        <p class="cell-b">Every documented live example is retail goods. No agentic rail has a shipped restaurant, ticketing or transport case. The vertical is open.</p>
+      </div>
+      <div class="cell">
+        <span class="pill">OBSERVED</span>
+        <span class="cell-t">Discovery broke</span>
+        <p class="cell-b">TikTok became where recommendation happens, and it dead-ends completely — a video makes you want a place and hands you nothing.</p>
+      </div>
+      <div class="cell">
+        <span class="pill ok">VERIFIED</span>
+        <span class="cell-t">Supply is consolidating</span>
+        <p class="cell-b">Amex owns Resy and Tock and is partnered with Toast. The reservation layer is closing, which makes the layer above it the one worth owning.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">10 — THE PLAN</span>
+      <h2>Built as though the API never arrives.</h2>
+      <p>Every comparable company — Resy, Tock, SevenRooms — started with direct, manual, single-city relationships and reached network partnership years later, unlocked by capital rather than a developer application. We plan for that shape rather than hoping against it.</p>
+    </div>
+      <div class="phase">
+        <span class="phase-k">0–6 MONTHS</span>
+        <div>
+          <span class="phase-t">One city, direct restaurants, concierge fulfilment</span>
+          <p class="cell-b">Hand-picked New York list. Relationships signed room by room, exactly how Resy and Tock both started. Deep links for cars and tickets. No platform integration claimed, because none exists.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-k">6–18 MONTHS</span>
+        <div>
+          <span class="phase-t">Certified on Toast, Stripe carries the money</span>
+          <p class="cell-b">Toast Orders API through certification gets the outcome half of the loop. Stripe Issuing for agents as the instrument. Human approval stays in the flow — nobody has shipped unattended spend.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-k">18–36 MONTHS</span>
+        <div>
+          <span class="phase-t">Reservation access, or the acquisition conversation</span>
+          <p class="cell-b">Earliest plausible window for a Resy or OpenTable calibre deal. Precedent says 2.5–6.5 years and it is always unlocked by capital or acquisition, never a developer application.</p>
+        </div>
+      </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <span class="eyebrow">11 — WHERE WE ARE</span>
+      <h2>Honestly stated.</h2>
+    </div>
+    <div class="two">
+      <div class="ask">
+        <span class="ask-t">What exists</span>
+        <p class="cell-b">The product design, the object model and the network mechanics are fully specified — see <a href="index.html" style="color:var(--lime)">the product</a> and <a href="thesis.html" style="color:var(--lime)">the thesis</a>. The Toast and Stripe integration path is researched against primary sources, in <a href="stripe-toast.html" style="color:var(--lime)">the strategy doc</a>.</p>
+      </div>
+      <div class="ask">
+        <span class="ask-t">What doesn't yet</span>
+        <p class="cell-b">No platform integration, no signed restaurant partners, no users. Every number and name on these pages is illustrative. We are pre-launch and say so on every surface — the alternative is claims that don't survive diligence.</p>
+      </div>
+      <div class="ask">
+        <span class="ask-t">What we need</span>
+        <p class="cell-b">Capital to run a dense New York pilot with concierge fulfilment, a founding restaurant cohort, and a first creator group who want provable attribution more than a flat fee.</p>
+      </div>
+      <div class="ask">
+        <span class="ask-t">What proves it</span>
+        <p class="cell-b">One number: whether a published night gets replayed by someone who wasn't there — and whether the second person's night is as good as the first. Everything else follows from that.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <a href="index.html" class="logo" style="font-size:17px">wyd<i>.ai</i></a>
+  <span style="font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:#4F5359">THE INTELLIGENCE LAYER FOR THE PHYSICAL WORLD</span>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <a href="index.html">The product</a>
+    <a href="thesis.html">Thesis</a>
+    <a href="profile.html">Profile</a>
+    <a href="stripe-toast.html">Strategy</a>
+    <a href="index.html#waitlist">Access</a>
+  </div>
+  <div class="prelaunch-note" style="width:100%;text-align:center;padding-top:6px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.09em;color:#4F5359">Illustrative product content &middot; pre-launch. New York pilot opening 2026.</div>
+</footer>
+</body>
+</html>
